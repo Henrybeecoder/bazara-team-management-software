@@ -54,7 +54,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="flex items-center justify-between p-4 bg-white shadow-sm">
+      <div className="flex items-center justify-between p-4 px-6 bg-white">
         <div className="flex items-center gap-4 md:flex-shrink-0">
           <button 
             className="md:hidden p-2"
@@ -105,12 +105,12 @@ export default function Header() {
           <div className="mx-2 text-gray-300">|</div>
           <div className="flex items-center gap-2">
             {iconItems.map((icon) => (
-              <div key={icon.id} className="p-2">
+              <div key={icon.id} className="p-2 cursor-pointer">
                 <Image 
                   src={icon.src} 
                   alt={icon.alt}
-                  width={24}
-                  height={24}
+                  width={30}
+                  height={30}
                 />
               </div>
             ))}

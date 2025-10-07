@@ -1,18 +1,7 @@
 
 import React from 'react';
+import { InputProps } from '@/types/inputProps';
 
-interface InputProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  icon?: React.ReactNode;
-  height?: string;
-  borderColor?: string;
-  backgroundColor?: string;
-  width?: string;
-  placeholder?: string;
-  type?: string;
-  disabled?: boolean;
-}
 
 const Input: React.FC<InputProps> = ({
   value,
