@@ -1,7 +1,7 @@
 import React from 'react';
 import { Loader } from 'react-feather';
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 export interface ButtonProps {
   variant?: ButtonVariant;
@@ -26,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses = `
+   cursor-pointer
     inline-flex items-center justify-center
     px-4 py-2
     text-xs font-medium
@@ -50,7 +51,14 @@ const Button: React.FC<ButtonProps> = ({
       bg-transparent
       hover:bg-gray-50
       focus:ring-gray-300
-    `
+    `,
+     danger: `
+      bg-[#E43A39]
+      text-white
+      hover:bg-[#E43A39]
+      focus:ring-[#E43A39]
+      border border-transparent
+    `,
   };
 
   const buttonClass = `

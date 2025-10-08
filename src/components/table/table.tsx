@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, MoreVertical } from 'react-feather';
+import { ChevronLeft, ChevronRight } from 'react-feather';
 
 interface Column<T> {
   header: string;
@@ -238,3 +238,5 @@ const SharedTable = <T extends Record<string, any>>({
     </div>
   );
 };
+
+export default SharedTable;

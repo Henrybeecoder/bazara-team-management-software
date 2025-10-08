@@ -7,6 +7,8 @@ import { Search } from "react-feather"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"
 import { Plus } from "react-feather"
+import TeamsTable from "./teamTable"
+import { CreateTeamModal } from "@/components/teammodal/teammodal"
 
 interface DropdownOption {
   value: string
@@ -17,6 +19,7 @@ export default function HomeScreen() {
     const [selectedEntity, setSelectedEntity] = useState<string>("")
     const [selectedTeam, setSelectedTeam] = useState<string>("")
     const [search, setSearch] = useState<string>("")
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const entityOptions: DropdownOption[] = [
         { value: "access-bank-ng", label: "Access Bank Nigeria" },
@@ -36,6 +39,10 @@ export default function HomeScreen() {
 
     return (
         <div>
+            <CreateTeamModal 
+                    isOpen={isModalOpen} 
+                    onClose={() => setIsModalOpen(false)} 
+                  />
             <div className="flex flex-row items-center gap-2">
                 <Image src={arrowleft} alt="Arrow Left" width={11} height={11} />
                 <p className="text-[#808080] font-regular text-[10px]">Admin Settings</p>
@@ -48,20 +55,20 @@ export default function HomeScreen() {
                     <p className="text-[#333333] font-bold text-[16px]">Teams</p>
                 </div>
 
-                <div className="flex lg:flex-row flex-col lg:justify-between mt-4">
-                    <div className="flex lg:flex-row flex-col gap-3">
-                         <div className="w-60">
+                <div className="flex lg:flex-row flex-col lg:justify-between mt-4 items-center">
+                    <div className="flex lg:flex-row flex-col gap-3 items-center w-[60%]">
+                      
             <Input
               value={search}
               onChange={() => setSearch(search)}
-              placeholder="Search for anything"
+              placeholder="Search by team name or code"
               icon={<Search size={18} color='#808080' />}
               height="40px"
-              backgroundColor='#FCFCFD'
+             width="w-[70%]"
             />
-          </div>
+        
                         <Dropdown
-                            label="Entity"
+                            
                             options={entityOptions}
                             value={selectedEntity}
                             onChange={setSelectedEntity}
@@ -71,9 +78,10 @@ export default function HomeScreen() {
                             borderRadius="8px"
                             chevronColor="#299CCA"
                             height="30px"
+                          
                         />
                         <Dropdown
-                            label="Team"
+                         
                             options={teamOptions}
                             value={selectedTeam}
                             onChange={setSelectedTeam}
@@ -83,21 +91,19 @@ export default function HomeScreen() {
                             borderRadius="8px"
                             chevronColor="#299CCA"
                             height="30px"
+                        
                         />
                     </div>
                     <div>
                        
-                              <Button variant="primary" icon={<Plus/>} >
+                              <Button variant="primary" icon={<Plus/>}    onClick={() => setIsModalOpen(true)} >
         Create New Team
       </Button>
 
-      {/* Secondary Button */}
-      <Button variant="secondary">
-        Secondary Button
-      </Button>
-
+     
                     </div>
                 </div>
+                <TeamsTable />
             </div>
         </div>
     )
