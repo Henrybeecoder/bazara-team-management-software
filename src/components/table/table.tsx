@@ -112,12 +112,7 @@ const SharedTable = <T extends Record<string, any>>({
           <thead>
             <tr className="bg-[#1659E6]">
               <th className="p-3 text-left">
-                <input
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedRows.length === currentData.length && currentData.length > 0}
-                  className="w-4 h-4"
-                />
+               
               </th>
               {columns.map((col, i) => (
                 <th
