@@ -29,7 +29,7 @@ const SharedTable = <T extends Record<string, any>>({
   onAction 
 }: SharedTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(100);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [actionPopup, setActionPopup] = useState<ActionPopupState>({ 
     show: false, 

@@ -8,7 +8,7 @@ export interface Team {
   entity: string;
   manager: string;
   created: string;
-  status: 'Active' | 'Deactivated';
+  status: string;
 }
 
 export interface Column<T> {

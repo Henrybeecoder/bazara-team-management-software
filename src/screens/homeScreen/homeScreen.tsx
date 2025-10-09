@@ -123,7 +123,11 @@ export default function HomeScreen() {
                         </Button>
                     </div>
                 </div>
-                <TeamsTable />
+                <TeamsTable 
+                    searchQuery={search}
+                    selectedEntity={selectedEntity}
+                    selectedTeam={selectedTeam}
+                />
             </div>
         </div>
     )

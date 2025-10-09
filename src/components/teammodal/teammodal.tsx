@@ -34,7 +34,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   const [description, setDescription] = useState('');
   const [teamEmail, setTeamEmail] = useState('');
   const [teamManager, setTeamManager] = useState('');
-  const [status, setStatus] = useState<'Active' | 'Deactivated'>('Active');
+  const [status, setStatus] = useState<string>('Active');
 
   useEffect(() => {
     if (team && isEditing) {

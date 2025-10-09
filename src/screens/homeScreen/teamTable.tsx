@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MoreVertical } from 'react-feather';
 
 import Button from '@/components/button/button';
@@ -14,8 +13,17 @@ import deleteModalIcon from '@/assets/icons/layoutIcons/delete-modal-icon.svg';
 import successGif from '@/assets/icons/layoutIcons/success.gif';
 import Image from 'next/image';
 
+interface TeamsTableProps {
+  searchQuery?: string;
+  selectedEntity?: string;
+  selectedTeam?: string;
+}
 
-const TeamsTable: React.FC = () => {
+const TeamsTable: React.FC<TeamsTableProps> = ({ 
+  searchQuery = '', 
+  selectedEntity = '', 
+  selectedTeam = '' 
+}) => {
   const [teams, setTeams] = useState(initialTeams);
   const [actionPopup, setActionPopup] = useState<ActionPopupState>({
     show: false,
@@ -30,6 +38,27 @@ const TeamsTable: React.FC = () => {
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Filter teams based on search query, entity, and team filters
+  const filteredTeams = useMemo(() => {
+    return teams.filter(team => {
+      // Search filter - check team name and code
+      const matchesSearch = searchQuery === '' || 
+        team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        team.code.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Entity filter
+      const matchesEntity = selectedEntity === '' || 
+        team.entity.toLowerCase().includes(selectedEntity.toLowerCase()) ||
+        team.entity.toLowerCase().replace(/\s+/g, '-').includes(selectedEntity.toLowerCase());
+
+      // Team filter - check if team name matches the selected team type
+      const matchesTeam = selectedTeam === '' || 
+        team.name.toLowerCase().includes(selectedTeam.toLowerCase());
+
+      return matchesSearch && matchesEntity && matchesTeam;
+    });
+  }, [teams, searchQuery, selectedEntity, selectedTeam]);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -165,13 +194,7 @@ const TeamsTable: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="mb-4">
-        <Button variant="primary" onClick={handleCreateTeam}>
-          Create New Team
-        </Button>
-      </div>
-      
-      <SharedTable<Team> columns={columns} data={teams} />
+      <SharedTable<Team> columns={columns} data={filteredTeams} />
 
       {actionPopup.show && actionPopup.teamId !== null && (
         <div
