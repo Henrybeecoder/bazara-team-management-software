@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { DropdownProps, DropdownOption } from '@/types/dropdownProps';
+import { ChevronDown } from 'react-feather';
 
 
 
@@ -8,16 +9,17 @@ const Dropdown: React.FC<DropdownProps> = ({
   options,
   value,
   onChange,
-  placeholder = 'Select an option',
-  bgColor = 'bg-white',
-  borderColor = 'border-gray-300',
-  chevronColor = 'text-gray-500',
-  selectedValueColor = 'text-gray-900',
-  width = 'w-full',
-  height = 'h-10',
-  borderRadius = 'rounded-md',
+ 
   disabled = false,
   error,
+   placeholder = 'Select an option',
+  bgColor = 'bg-white',
+  borderColor = 'border-[#299CCA]',
+  chevronColor = 'text-[#299CCA]',
+  selectedValueColor = 'text-[#299CCA]',
+  width = 'w-full',
+  height = 'h-10',
+  borderRadius = 'rounded-lg',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -102,26 +104,18 @@ const Dropdown: React.FC<DropdownProps> = ({
           aria-expanded={isOpen}
           aria-labelledby={label ? undefined : 'dropdown-button'}
           className={`
-            ${width} ${height} ${bgColor} ${borderColor} ${borderRadius}
+         ${height} ${bgColor} w-full  rounded-lg
             border px-3 py-2 text-left flex items-center justify-between
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            focus:outline-none focus:ring-2 focus:ring-blue-500 border-[#299CCA]
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             ${error ? 'border-red-500' : ''}
           `}
           data-testid="dropdown-button"
         >
-          <span className={selectedOption ? selectedValueColor : 'text-gray-400'}>
+          <span className={selectedOption &&  selectedValueColor}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
-          <svg
-            className={`w-5 h-5 transition-transform ${chevronColor} ${isOpen ? 'transform rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            data-testid="chevron-icon"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+         <ChevronDown color='#299CCA'/>
         </button>
 
         {isOpen && (

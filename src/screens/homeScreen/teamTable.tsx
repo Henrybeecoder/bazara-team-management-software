@@ -1,40 +1,36 @@
+
 import React, { useState, useEffect } from 'react';
-import { MoreVertical, X, Trash2, CheckCircle } from 'react-feather';
+import { MoreVertical } from 'react-feather';
+
 import Button from '@/components/button/button';
 import FullModal from '@/components/fullModal/fullModal';
 import SharedTable from '@/components/table/table';
+import CreateTeamModal from '@/components/teammodal/teammodal';
+import Loader from '@/components/loader/loader';
+
 import { Team, ActionPopupState, Column } from '@/types/teamTable';
+import { teams as initialTeams } from '@/utils/data';
 import deleteModalIcon from '@/assets/icons/layoutIcons/delete-modal-icon.svg';
 import successGif from '@/assets/icons/layoutIcons/success.gif';
 import Image from 'next/image';
 
 
-
-
-
-
-
 const TeamsTable: React.FC = () => {
-  const teams: Team[] = [
-    { name: 'IT Support', code: 'ADM', desc: 'Manages system settings, user roles, and platform c...', email: 'admin@accessbankplc.com', entity: 'Access Bank Nigeria', manager: 'Henry Omofonmwan', created: '24/01/2024', status: 'Active' },
-    { name: 'Change Management Team', code: 'ADD', desc: 'Handles all change requests and implementations...', email: 'change@accessbankplc.com', entity: 'Access Bank Nigeria', manager: 'Sarah Williams', created: '15/02/2024', status: 'Active' },
-    { name: 'Incident Manager', code: 'GGA', desc: 'Responds to and resolves system incidents...', email: 'incident@accessbankplc.com', entity: 'Access Bank Nigeria', manager: 'John Davidson', created: '10/03/2024', status: 'Deactivated' },
-    { name: 'Service Request Manager', code: 'SRM', desc: 'Manages service requests and fulfillment...', email: 'service@accessbankplc.com', entity: 'Access Bank Nigeria', manager: 'Mary Johnson', created: '05/04/2024', status: 'Active' },
-    { name: 'Problem Manager', code: 'PRM', desc: 'Identifies and resolves root causes of problems...', email: 'problem@accessbankplc.com', entity: 'Access Bank Nigeria', manager: 'David Brown', created: '20/04/2024', status: 'Active' },
-  ];
-
+  const [teams, setTeams] = useState(initialTeams);
   const [actionPopup, setActionPopup] = useState<ActionPopupState>({
     show: false,
     x: 0,
     y: 0,
     teamId: null
   });
-
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       if (actionPopup.show) {
@@ -60,8 +56,10 @@ const TeamsTable: React.FC = () => {
   };
 
   const handleEditTeam = (teamId: number) => {
-    console.log('Edit team:', teams[teamId].name);
-    alert(`Edit Team: ${teams[teamId].name}`);
+    const teamToEdit = teams[teamId];
+    setEditingTeam(teamToEdit);
+    setIsEditing(true);
+    setCreateModalOpen(true);
     setActionPopup({ show: false, x: 0, y: 0, teamId: null });
   };
 
@@ -72,13 +70,51 @@ const TeamsTable: React.FC = () => {
   };
 
   const handleConfirmDelete = () => {
-    setDeleteModalOpen(false);
-    setSuccessModalOpen(true);
+    if (selectedTeamId !== null) {
+      setIsLoading(true);
+      setTimeout(() => {
+        const updatedTeams = teams.filter((_, index) => index !== selectedTeamId);
+        setTeams(updatedTeams);
+        setIsLoading(false);
+        setDeleteModalOpen(false);
+        setSuccessModalOpen(true);
+      }, 1000);
+    }
   };
 
   const handleSuccessClose = () => {
     setSuccessModalOpen(false);
     setSelectedTeamId(null);
+  };
+
+  const handleCreateTeam = () => {
+    setEditingTeam(null);
+    setIsEditing(false);
+    setCreateModalOpen(true);
+  };
+
+  const handleSaveTeam = (teamData: Omit<Team, 'created'>) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      if (isEditing && editingTeam) {
+        const updatedTeams = teams.map(team => 
+          team === editingTeam 
+            ? { ...teamData, created: editingTeam.created }
+            : team
+        );
+        setTeams(updatedTeams);
+      } else {
+        const newTeam: Team = {
+          ...teamData,
+          created: new Date().toLocaleDateString('en-GB')
+        };
+        setTeams([...teams, newTeam]);
+      }
+      setIsLoading(false);
+      setCreateModalOpen(false);
+      setEditingTeam(null);
+      setIsEditing(false);
+    }, 1000);
   };
 
   const columns: Column<Team>[] = [
@@ -91,7 +127,7 @@ const TeamsTable: React.FC = () => {
       header: 'Manager',
       render: (row: Team) => (
         <div className="flex items-center gap-2">
-          <span className="bg-[#1659E6] text-white px-3 py-1 rounded-full text-xs font-medium">
+          <span className="bg-[#1659E6] flex justify-center items-center text-white px-3 py-1 rounded-full h-12 w-12 text-[16px] font-medium text-xs font-medium">
             {row.manager.split(' ').map(n => n[0]).join('')}
           </span>
           <span>{row.manager}</span>
@@ -129,9 +165,14 @@ const TeamsTable: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      <div className="mb-4">
+        <Button variant="primary" onClick={handleCreateTeam}>
+          Create New Team
+        </Button>
+      </div>
+      
       <SharedTable<Team> columns={columns} data={teams} />
 
-      {/* Action Popup */}
       {actionPopup.show && actionPopup.teamId !== null && (
         <div
           className="fixed bg-white rounded-xl z-50"
@@ -162,7 +203,6 @@ const TeamsTable: React.FC = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       <FullModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
@@ -170,7 +210,7 @@ const TeamsTable: React.FC = () => {
         height="270px"
       >
         <div className="flex flex-col items-center justify-center h-full px-6 py-4">
-         <Image src={deleteModalIcon} alt="Delete Icon" width={64} height={64} className="mb-4" />
+          <Image src={deleteModalIcon} alt="Delete Icon" width={64} height={64} className="mb-4" />
           <h2 className="text-[#333333] text-base font-bold mb-4">Delete Team</h2>
           <p className="text-[#333333] text-sm font-normal text-center mb-8">
             Are you sure you want to deactivate this team?
@@ -186,7 +226,6 @@ const TeamsTable: React.FC = () => {
         </div>
       </FullModal>
 
-      {/* Success Modal */}
       <FullModal
         isOpen={successModalOpen}
         onClose={handleSuccessClose}
@@ -194,7 +233,6 @@ const TeamsTable: React.FC = () => {
         height="300px"
       >
         <div className="flex flex-col items-center justify-center h-full px-6">
-         
           <Image src={successGif} alt="Success" width={100} height={100} className="mb-4" />
           <h2 className="text-[#333333] text-lg font-bold mb-2">Team Deleted</h2>
           <p className="text-[#333333] text-sm font-normal text-center mb-6">
@@ -205,6 +243,20 @@ const TeamsTable: React.FC = () => {
           </Button>
         </div>
       </FullModal>
+
+      <CreateTeamModal
+        isOpen={createModalOpen}
+        onClose={() => {
+          setCreateModalOpen(false);
+          setEditingTeam(null);
+          setIsEditing(false);
+        }}
+        team={editingTeam}
+        onSave={handleSaveTeam}
+        isEditing={isEditing}
+      />
+
+      {isLoading && <Loader />}
     </div>
   );
 };

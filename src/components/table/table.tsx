@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'react-feather';
+import Image from 'next/image';
+import TableDown from '@/assets/icons/layoutIcons/table-down.svg';
 
 interface Column<T> {
   header: string;
@@ -157,14 +159,14 @@ const SharedTable = <T extends Record<string, any>>({
 
       <div className="flex items-center justify-between mt-4 px-2">
         <div className="flex items-center gap-2">
-          <span className="text-[#333333] text-sm font-normal">Page Size:</span>
+          <span className="text-[#808080] text-[12px] font-medium">Page Size:</span>
           <select
             value={pageSize}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
               setPageSize(Number(e.target.value));
               setCurrentPage(1);
             }}
-            className="border border-gray-300 rounded px-3 py-1 text-sm text-[#333333]"
+            className=" px-3 py-1 text-[12px] font-bold text-[#333333]"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>
@@ -179,6 +181,7 @@ const SharedTable = <T extends Record<string, any>>({
             disabled={currentPage === 1}
             className="disabled:opacity-50"
           >
+          
             <ChevronLeft className="w-5 h-5 text-[#808080]" />
           </button>
           {renderPageNumbers()}
@@ -195,11 +198,11 @@ const SharedTable = <T extends Record<string, any>>({
           <span className="text-[#333333] text-xs font-medium">
             Page {currentPage} of {totalPages}
           </span>
-          <span className="text-[#333333] text-sm font-normal">Go to page</span>
+          <span className="text-[#A3A3A3] text-xs font-medium">Go to page</span>
           <select
             value={currentPage}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCurrentPage(Number(e.target.value))}
-            className="border border-gray-300 rounded px-2 py-1 text-sm text-[#333333]"
+            className="border border-gray-300 rounded px-2 py-1 text-xs text-[#333333]"
           >
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <option key={page} value={page}>
